@@ -1,37 +1,42 @@
 # diagnostic_dashboard.py
+
 import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
+from joblib import load
 from sklearn.datasets import load_breast_cancer
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.decomposition import PCA
 
-# Load and train
+# Load dataset
 cancer = load_breast_cancer()
 X = cancer.data
 y = cancer.target
 feature_names = cancer.feature_names
 target_names = cancer.target_names
-clf = RandomForestClassifier(n_estimators=100, random_state=42)
-clf.fit(X, y)
+
+# Load pretrained classifier
+clf = load('breast_cancer_rf_model.joblib')
+
+# Predict
 probs = clf.predict_proba(X)
 preds = clf.predict(X)
 confidences = np.max(probs, axis=1)
 
-# DataFrame for plotting
+# Construct main dataframe
 df = pd.DataFrame(X, columns=feature_names)
 df['actual'] = [target_names[i] for i in y]
 df['predicted'] = [target_names[i] for i in preds]
 df['confidence'] = confidences
 
+# PCA for dimensionality reduction
 pca = PCA(n_components=2)
 pca_result = pca.fit_transform(X)
 df['PCA1'] = pca_result[:, 0]
 df['PCA2'] = pca_result[:, 1]
 
-# App UI
+# Streamlit UI setup
 st.set_page_config(layout="wide")
 st.title("🧠 Ultra-Immersive Diagnostic Dashboard")
 
@@ -47,7 +52,7 @@ with tabs[0]:
     st.markdown(f"### Actual: **{patient['actual'].upper()}**")
     st.markdown(f"### Confidence: `{patient['confidence']:.2%}`")
 
-    # Radar plot
+    # Radar Chart
     radar_features = ['mean radius', 'mean texture', 'mean perimeter', 'mean area', 'mean smoothness']
     radar_values = [patient[f] for f in radar_features]
 
