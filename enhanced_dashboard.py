@@ -68,6 +68,36 @@ st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
+/* CSS Variables for adaptive theming */
+:root {
+    --card-background: #f8f9fa;
+    --text-color: #333;
+    --border-color: #e9ecef;
+}
+
+/* Dark mode detection and overrides */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --card-background: rgba(40, 42, 54, 0.8);
+        --text-color: #f8f9fa;
+        --border-color: rgba(255, 255, 255, 0.1);
+    }
+}
+
+/* Streamlit dark theme detection */
+[data-theme="dark"] {
+    --card-background: rgba(40, 42, 54, 0.8) !important;
+    --text-color: #f8f9fa !important;
+    --border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Additional fallback for Streamlit dark backgrounds */
+.st-emotion-cache-13k62yr {
+    --card-background: rgba(40, 42, 54, 0.8) !important;
+    --text-color: #f8f9fa !important;
+    --border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
 html, body, [class*="css"] {
     font-family: 'Inter', sans-serif;
 }
@@ -83,13 +113,14 @@ html, body, [class*="css"] {
 }
 
 .metric-card {
-    background: white;
+    background: var(--card-background, white);
     padding: 1.5rem;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     border-left: 4px solid #667eea;
     margin: 1rem 0;
     transition: transform 0.2s ease;
+    color: var(--text-color, #333);
 }
 
 .metric-card:hover {
@@ -129,11 +160,12 @@ html, body, [class*="css"] {
 }
 
 .sidebar-section {
-    background: #f8f9fa;
+    background: var(--card-background, #f8f9fa);
     padding: 1rem;
     border-radius: 8px;
     margin: 1rem 0;
-    border: 1px solid #e9ecef;
+    border: 1px solid var(--border-color, #e9ecef);
+    color: var(--text-color, #333);
 }
 
 .patient-card {
@@ -164,29 +196,76 @@ html, body, [class*="css"] {
 }
 
 .feature-item {
-    background: white;
+    background: var(--card-background, white);
     padding: 1rem;
     border-radius: 8px;
-    border: 1px solid #e9ecef;
+    border: 1px solid var(--border-color, #e9ecef);
     text-align: center;
+    color: var(--text-color, #333);
 }
 
 .navigation-tabs {
-    background: white;
+    background: var(--card-background, white);
     border-radius: 10px;
     padding: 0.5rem;
     margin-bottom: 2rem;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    color: var(--text-color, #333);
 }
 
 .footer-info {
-    background: #f8f9fa;
+    background: var(--card-background, #f8f9fa);
     padding: 2rem;
     border-radius: 10px;
     text-align: center;
     margin-top: 3rem;
-    border: 1px solid #e9ecef;
+    border: 1px solid var(--border-color, #e9ecef);
+    color: var(--text-color, #333);
 }
+
+/* Force dark mode styles when detected */
+body[class*="dark"] .metric-card,
+body[class*="dark"] .sidebar-section,
+body[class*="dark"] .footer-info,
+body[class*="dark"] .feature-item,
+body[class*="dark"] .navigation-tabs {
+    background: rgba(40, 42, 54, 0.8) !important;
+    color: #f8f9fa !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+</style>
+
+<script>
+// Enhanced dark mode detection
+function adaptToTheme() {
+    const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const streamlitTheme = document.body.style.backgroundColor;
+    const hasStreamlitDark = streamlitTheme.includes('14, 17, 23') || streamlitTheme.includes('rgb(14, 17, 23)');
+    
+    if (isDark || hasStreamlitDark) {
+        document.documentElement.style.setProperty('--card-background', 'rgba(40, 42, 54, 0.8)');
+        document.documentElement.style.setProperty('--text-color', '#f8f9fa');
+        document.documentElement.style.setProperty('--border-color', 'rgba(255, 255, 255, 0.1)');
+    } else {
+        document.documentElement.style.setProperty('--card-background', '#f8f9fa');
+        document.documentElement.style.setProperty('--text-color', '#333');
+        document.documentElement.style.setProperty('--border-color', '#e9ecef');
+    }
+}
+
+// Run immediately and on changes
+adaptToTheme();
+if (window.matchMedia) {
+    window.matchMedia('(prefers-color-scheme: dark)').addListener(adaptToTheme);
+}
+
+// Monitor for Streamlit theme changes
+const observer = new MutationObserver(adaptToTheme);
+observer.observe(document.body, { 
+    attributes: true, 
+    attributeFilter: ['style', 'class'] 
+});
+</script>
 </style>
 """, unsafe_allow_html=True)
 
