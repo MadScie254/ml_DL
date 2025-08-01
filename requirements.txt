@@ -1,0 +1,33 @@
+"""
+Installation and Setup Guide
+============================
+Complete setup instructions for the MedAI Advanced Diagnostic Suite
+"""
+
+# Core dependencies
+streamlit>=1.28.0
+pandas>=1.5.0
+numpy>=1.24.0
+scikit-learn>=1.3.0
+plotly>=5.15.0
+seaborn>=0.12.0
+matplotlib>=3.7.0
+joblib>=1.3.0
+
+# Advanced visualization
+kaleido>=0.2.1  # For static image export
+plotly-express>=0.4.1
+
+# Optional enhancements
+streamlit-aggrid>=0.3.4  # Enhanced data tables
+streamlit-plotly-events>=0.0.6  # Interactive plot events
+streamlit-option-menu>=0.3.6  # Better navigation
+
+# Development and testing
+pytest>=7.0.0
+black>=23.0.0
+flake8>=6.0.0
+
+# Data processing
+scipy>=1.10.0
+openpyxl>=3.1.0  # Excel support
