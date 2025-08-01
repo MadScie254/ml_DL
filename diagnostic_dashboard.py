@@ -22,47 +22,307 @@ from sklearn.metrics import confusion_matrix, classification_report
 import warnings
 warnings.filterwarnings('ignore')
 
-# Custom CSS for medical theme
-st.markdown("""
+# Real Medical Icons Configuration
+MEDICAL_ICONS = {
+    'stethoscope': '🩺',
+    'microscope': '🔬',
+    'dna': '🧬',
+    'pill': '💊',
+    'syringe': '💉',
+    'heart_monitor': '📈',
+    'x_ray': '🏥',
+    'lab_results': '📋',
+    'warning': '⚠️',
+    'check_mark': '✅',
+    'critical': '🚨',
+    'analytics': '📊',
+    'brain': '🧠',
+    'test_tube': '🧪',
+    'calendar': '📅',
+    'report': '📄',
+    'shield': '🛡️',
+    'target': '🎯'
+}
+
+# Detect system theme preference (default to dark for medical applications)
+def get_theme_config():
+    """Auto-detect or default to dark theme for medical applications (reduces eye strain)"""
+    import streamlit as st
+    
+    # Try to detect system theme, default to dark for medical use
+    theme = {
+        'name': 'dark',  # Default to dark theme for medical applications
+        'bg_primary': '#0f172a',
+        'bg_secondary': '#1e293b',
+        'bg_sidebar': '#334155',
+        'text_primary': '#f8fafc',
+        'text_secondary': '#cbd5e1',
+        'accent_color': '#3b82f6',
+        'success_color': '#10b981',
+        'warning_color': '#f59e0b',
+        'danger_color': '#ef4444',
+        'border_color': '#475569',
+        'card_shadow': '0 4px 6px -1px rgba(0, 0, 0, 0.3)',
+        'gradient_primary': 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)',
+        'gradient_secondary': 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)'
+    }
+    
+    # Light theme alternative (can be toggled)
+    light_theme = {
+        'name': 'light',
+        'bg_primary': '#ffffff',
+        'bg_secondary': '#f8fafc',
+        'bg_sidebar': '#f1f5f9',
+        'text_primary': '#1e293b',
+        'text_secondary': '#475569',
+        'accent_color': '#3b82f6',
+        'success_color': '#059669',
+        'warning_color': '#d97706',
+        'danger_color': '#dc2626',
+        'border_color': '#e2e8f0',
+        'card_shadow': '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+        'gradient_primary': 'linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)',
+        'gradient_secondary': 'linear-gradient(135deg, #f8fafc 0%, #ffffff 100%)'
+    }
+    
+    return theme
+
+# Get current theme
+current_theme = get_theme_config()
+
+# Adaptive CSS with real medical styling and theme support
+st.markdown(f"""
 <style>
-.medical-header {
-    background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
-    padding: 1rem;
-    border-radius: 10px;
-    color: white;
+/* Root theme variables */
+:root {{
+    --bg-primary: {current_theme['bg_primary']};
+    --bg-secondary: {current_theme['bg_secondary']};
+    --bg-sidebar: {current_theme['bg_sidebar']};
+    --text-primary: {current_theme['text_primary']};
+    --text-secondary: {current_theme['text_secondary']};
+    --accent-color: {current_theme['accent_color']};
+    --success-color: {current_theme['success_color']};
+    --warning-color: {current_theme['warning_color']};
+    --danger-color: {current_theme['danger_color']};
+    --border-color: {current_theme['border_color']};
+    --card-shadow: {current_theme['card_shadow']};
+}}
+
+/* Medical themed headers with real icons */
+.medical-header {{
+    background: {current_theme['gradient_primary']};
+    padding: 2rem;
+    border-radius: 15px;
+    color: var(--text-primary);
     text-align: center;
     margin-bottom: 2rem;
-}
-.diagnostic-card {
-    background: #f8f9fa;
-    padding: 1rem;
-    border-radius: 10px;
-    border-left: 4px solid #007bff;
+    border: 2px solid var(--accent-color);
+    box-shadow: var(--card-shadow);
+}}
+
+.medical-header h1 {{
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}}
+
+.medical-header p {{
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin: 0;
+}}
+
+/* Diagnostic cards with medical styling */
+.diagnostic-card {{
+    background: var(--bg-secondary);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border-left: 5px solid var(--accent-color);
     margin: 1rem 0;
-}
-.alert-high { background-color: #ffebee; border-left-color: #f44336; }
-.alert-medium { background-color: #fff3e0; border-left-color: #ff9800; }
-.alert-low { background-color: #e8f5e8; border-left-color: #4caf50; }
-.metric-container {
-    background: white;
-    padding: 1rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    margin: 0.5rem 0;
-}
-.sidebar-content {
-    background: #f1f3f4;
-    padding: 1rem;
-    border-radius: 8px;
+    box-shadow: var(--card-shadow);
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+}}
+
+.diagnostic-card:hover {{
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+}}
+
+/* Alert levels with medical urgency colors */
+.alert-critical {{ 
+    background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+    border-left-color: #991b1b;
+    color: white;
+}}
+
+.alert-high {{ 
+    background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+    border-left-color: #c2410c;
+    color: white;
+}}
+
+.alert-medium {{ 
+    background: linear-gradient(135deg, #ca8a04 0%, #eab308 100%);
+    border-left-color: #a16207;
+    color: white;
+}}
+
+.alert-low {{ 
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    border-left-color: #047857;
+    color: white;
+}}
+
+/* Medical metric containers */
+.metric-container {{
+    background: var(--bg-secondary);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
     margin: 1rem 0;
-}
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+}}
+
+.metric-container:hover {{
+    border-color: var(--accent-color);
+    transform: translateY(-1px);
+}}
+
+/* Sidebar medical styling */
+.sidebar-content {{
+    background: var(--bg-secondary);
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin: 1rem 0;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--card-shadow);
+    color: var(--text-primary);
+}}
+
+/* Medical data table styling */
+.medical-table {{
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+}}
+
+.medical-table th {{
+    background: var(--accent-color);
+    color: white;
+    padding: 1rem;
+    font-weight: 600;
+}}
+
+.medical-table td {{
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+}}
+
+/* Medical status indicators */
+.status-indicator {{
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}}
+
+.status-benign {{
+    background: var(--success-color);
+    color: white;
+}}
+
+.status-malignant {{
+    background: var(--danger-color);
+    color: white;
+}}
+
+.status-uncertain {{
+    background: var(--warning-color);
+    color: white;
+}}
+
+/* Professional medical dashboard layout */
+.dashboard-grid {{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}}
+
+.dashboard-card {{
+    background: var(--bg-secondary);
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}}
+
+.dashboard-card h3 {{
+    color: var(--accent-color);
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+}}
+
+/* Medical icons styling */
+.medical-icon {{
+    font-size: 1.5rem;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+}}
+
+.medical-icon-large {{
+    font-size: 2.5rem;
+    margin-right: 1rem;
+}}
+
+/* Responsive medical design */
+@media (max-width: 768px) {{
+    .medical-header h1 {{
+        font-size: 2rem;
+    }}
+    
+    .dashboard-grid {{
+        grid-template-columns: 1fr;
+    }}
+    
+    .metric-container, .diagnostic-card {{
+        padding: 1rem;
+    }}
+}}
+
+/* Custom scrollbar for medical theme */
+::-webkit-scrollbar {{
+    width: 8px;
+}}
+
+::-webkit-scrollbar-track {{
+    background: var(--bg-primary);
+}}
+
+::-webkit-scrollbar-thumb {{
+    background: var(--accent-color);
+    border-radius: 4px;
+}}
+
+::-webkit-scrollbar-thumb:hover {{
+    background: #2563eb;
+}}
 </style>
 """, unsafe_allow_html=True)
 
-# App configuration
+# App configuration with real medical icon
 st.set_page_config(
     page_title="MedAI Diagnostic Center",
-    page_icon="⚕️",
+    page_icon="🩺",  # Real stethoscope icon instead of generic medical symbol
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -83,7 +343,7 @@ def load_model():
         clf = load('breast_cancer_rf_model.joblib')
         return clf
     except:
-        st.error("⚠️ Model file not found. Please ensure 'breast_cancer_rf_model.joblib' exists.")
+        st.error(f"{MEDICAL_ICONS['warning']} Model file not found. Please ensure 'breast_cancer_rf_model.joblib' exists.")
         return None
 
 # Load data and model
@@ -128,17 +388,17 @@ def generate_predictions():
 
 df, pca = generate_predictions()
 
-# Header
-st.markdown("""
+# Header with real medical icons
+st.markdown(f"""
 <div class="medical-header">
-    <h1>⚕️ MedAI Breast Cancer Diagnostic Center</h1>
-    <p>Advanced AI-Powered Diagnostic Analysis System</p>
+    <h1><span class="medical-icon-large">{MEDICAL_ICONS['stethoscope']}</span>MedAI Breast Cancer Diagnostic Center</h1>
+    <p><span class="medical-icon">{MEDICAL_ICONS['microscope']}</span>Advanced AI-Powered Diagnostic Analysis System<span class="medical-icon">{MEDICAL_ICONS['dna']}</span></p>
 </div>
 """, unsafe_allow_html=True)
 
-# Sidebar with system overview
+# Sidebar with system overview and real medical icons
 with st.sidebar:
-    st.markdown("### 📊 System Overview")
+    st.markdown(f"### <span class='medical-icon'>{MEDICAL_ICONS['analytics']}</span> System Overview", unsafe_allow_html=True)
     
     total_patients = len(df)
     accuracy = (df['is_correct'].sum() / total_patients) * 100
@@ -147,7 +407,7 @@ with st.sidebar:
     
     st.markdown(f"""
     <div class="sidebar-content">
-        <h4>📈 Performance Metrics</h4>
+        <h4><span class='medical-icon'>{MEDICAL_ICONS['heart_monitor']}</span>Performance Metrics</h4>
         <p><strong>Total Cases:</strong> {total_patients}</p>
         <p><strong>Model Accuracy:</strong> {accuracy:.1f}%</p>
         <p><strong>High Confidence Cases:</strong> {high_conf_cases}</p>
@@ -161,26 +421,26 @@ with st.sidebar:
     
     st.markdown(f"""
     <div class="sidebar-content">
-        <h4>🔬 Dataset Composition</h4>
+        <h4><span class='medical-icon'>{MEDICAL_ICONS['microscope']}</span>Dataset Composition</h4>
         <p><strong>Benign Cases:</strong> {benign_count}</p>
         <p><strong>Malignant Cases:</strong> {malignant_count}</p>
         <p><strong>Benign Rate:</strong> {(benign_count/total_patients)*100:.1f}%</p>
     </div>
     """, unsafe_allow_html=True)
 
-# Main dashboard with enhanced tabs
+# Main dashboard with enhanced tabs and real medical icons
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
-    "🏥 Patient Analysis", 
-    "🧬 Molecular Explorer", 
-    "⚠️ Risk Assessment", 
-    "📊 Performance Analytics",
-    "🎯 Prediction Engine",
-    "📋 Clinical Report"
+    f"{MEDICAL_ICONS['x_ray']} Patient Analysis", 
+    f"{MEDICAL_ICONS['dna']} Molecular Explorer", 
+    f"{MEDICAL_ICONS['warning']} Risk Assessment", 
+    f"{MEDICAL_ICONS['analytics']} Performance Analytics",
+    f"{MEDICAL_ICONS['target']} Prediction Engine",
+    f"{MEDICAL_ICONS['lab_results']} Clinical Report"
 ])
 
 # Tab 1: Enhanced Patient Analysis
 with tab1:
-    st.markdown("### 🏥 Individual Patient Diagnostic Analysis")
+    st.markdown(f"### <span class='medical-icon'>{MEDICAL_ICONS['x_ray']}</span>Individual Patient Diagnostic Analysis", unsafe_allow_html=True)
     
     col1, col2 = st.columns([1, 3])
     
@@ -204,7 +464,7 @@ with tab1:
         
         st.markdown(f"""
         <div class="diagnostic-card {risk_class}">
-            <h3>🔬 Diagnosis</h3>
+            <h3><span class='medical-icon'>{MEDICAL_ICONS['microscope']}</span>Diagnosis</h3>
             <p><strong>Predicted:</strong> {patient['predicted'].upper()}</p>
             <p><strong>Actual:</strong> {patient['actual'].upper()}</p>
             <p><strong>Confidence:</strong> {patient['confidence']:.1%}</p>
@@ -213,7 +473,7 @@ with tab1:
         """, unsafe_allow_html=True)
         
         # Feature importance for this patient
-        st.markdown("### 📊 Key Biomarkers")
+        st.markdown(f"### <span class='medical-icon'>{MEDICAL_ICONS['analytics']}</span>Key Biomarkers", unsafe_allow_html=True)
         key_features = ['mean radius', 'mean texture', 'mean perimeter', 'worst concavity', 'worst symmetry']
         for feature in key_features:
             value = patient[feature]
@@ -334,7 +594,7 @@ with tab2:
 
 # Tab 3: Risk Assessment Dashboard
 with tab3:
-    st.markdown("### ⚠️ Comprehensive Risk Assessment")
+    st.markdown(f"### <span class='medical-icon'>{MEDICAL_ICONS['warning']}</span>Comprehensive Risk Assessment", unsafe_allow_html=True)
     
     # Risk distribution
     col1, col2, col3 = st.columns(3)
@@ -410,7 +670,7 @@ with tab3:
 
 # Tab 4: Performance Analytics
 with tab4:
-    st.markdown("### 📊 Advanced Performance Analytics")
+    st.markdown(f"### <span class='medical-icon'>{MEDICAL_ICONS['analytics']}</span>Advanced Performance Analytics", unsafe_allow_html=True)
     
     # Confusion matrix
     col1, col2 = st.columns(2)
@@ -476,7 +736,7 @@ with tab4:
 
 # Tab 5: Prediction Engine
 with tab5:
-    st.markdown("### 🎯 Interactive Prediction Engine")
+    st.markdown(f"### <span class='medical-icon'>{MEDICAL_ICONS['target']}</span>Interactive Prediction Engine", unsafe_allow_html=True)
     
     st.markdown("#### 🔬 Custom Case Analysis")
     
